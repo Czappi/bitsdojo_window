@@ -13,7 +13,7 @@ typedef WindowButtonBuilder = Widget Function(
 
 class WindowButtonContext {
   BuildContext? context;
-  MouseState? mouseState;
+  MouseState mouseState = MouseState();
   Color? backgroundColor;
   Color? iconColor;
 }
@@ -43,7 +43,7 @@ const _defaultButtonColors = WindowButtonColors(
 
 class WindowButton extends StatelessWidget {
   final WindowButtonBuilder? builder;
-  final WindowButtonIconBuilder? iconBuilder;
+  final WindowButtonIconBuilder iconBuilder;
   final WindowButtonColors? colors;
   late final bool animate;
   final EdgeInsets? padding;
@@ -53,7 +53,7 @@ class WindowButton extends StatelessWidget {
       {Key? key,
       this.colors,
       this.builder,
-      @required this.iconBuilder,
+      required this.iconBuilder,
       this.padding,
       this.onPressed,
       this.animate = false})
@@ -61,19 +61,18 @@ class WindowButton extends StatelessWidget {
 
   Color getBackgroundColor(MouseState mouseState) {
     var colors = this.colors ?? _defaultButtonColors;
-
-    if ((mouseState.isMouseDown!) && (colors.mouseDown != null))
+    if ((mouseState.isMouseDown) && (colors.mouseDown != null))
       return colors.mouseDown!;
-    if ((mouseState.isMouseOver!) && (colors.mouseOver != null))
+    if ((mouseState.isMouseOver) && (colors.mouseOver != null))
       return colors.mouseOver!;
     return colors.normal!;
   }
 
   Color getIconColor(MouseState mouseState) {
     final colors = this.colors ?? _defaultButtonColors;
-    if ((mouseState.isMouseDown!) && (colors.iconMouseDown != null))
+    if ((mouseState.isMouseDown) && (colors.iconMouseDown != null))
       return colors.iconMouseDown!;
-    if ((mouseState.isMouseOver!) && (colors.iconMouseOver != null))
+    if ((mouseState.isMouseOver) && (colors.iconMouseOver != null))
       return colors.iconMouseOver!;
     return colors.iconNormal!;
   }
@@ -96,9 +95,7 @@ class WindowButton extends StatelessWidget {
           ..backgroundColor = getBackgroundColor(mouseState)
           ..iconColor = getIconColor(mouseState);
 
-        var icon = (this.iconBuilder != null)
-            ? this.iconBuilder!(buttonContext)
-            : Container();
+        var icon = this.iconBuilder(buttonContext);
         double borderSize = appWindow.borderSize;
         double defaultPadding =
             (appWindow.titleBarHeight - borderSize) / 3 - (borderSize / 2);
@@ -107,7 +104,7 @@ class WindowButton extends StatelessWidget {
             getBackgroundColor(MouseState()..isMouseOver = true).withOpacity(0);
         var padding = this.padding ?? EdgeInsets.all(defaultPadding);
         var animationMs =
-            mouseState.isMouseOver! ? (animate ? 100 : 0) : (animate ? 200 : 0);
+            mouseState.isMouseOver ? (animate ? 100 : 0) : (animate ? 200 : 0);
         Widget iconWithPadding = Padding(padding: padding, child: icon);
         iconWithPadding = AnimatedContainer(
             curve: Curves.easeOut,

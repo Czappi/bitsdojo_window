@@ -11,6 +11,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 void main() {
   runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
   doWhenWindowReady(() {
     final win = appWindow;
     final initialSize = Size(600, 450);
